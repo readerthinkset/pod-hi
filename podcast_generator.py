@@ -1088,7 +1088,7 @@ Return EXACTLY {batch_size} turns as a JSON array (no markdown):
             resp = requests.post("https://gen.pollinations.ai/v1/chat/completions", json={
                 "model": model_name,
                 "messages": [
-                    {"role": "system", "content": "You write natural A2-level Hindi podcast scripts with VERY clear punctuation. Every sentence must have at least 2 commas for natural TTS pauses. Arjun and Priya strictly alternate. Highlight 1 key target word per turn in double asterisks. No filler sounds. CRITICAL: the target field must contain ONLY Hindi (Devanagari script). The translit field must contain ONLY Latin letters: romanization. English belongs only in the english field. Output single compact JSON array without unescaped newlines inside strings."},
+                    {"role": "system", "content": "You write natural A2-level Hindi podcast scripts with VERY clear punctuation. Every sentence must have at least 2 commas for natural TTS pauses. Arjun and Priya strictly alternate. Highlight 1 key target word per turn in double asterisks. No filler sounds. CRITICAL: the target field must contain ONLY Hindi (Devanagari script). Each host addresses the OTHER host by name: Priya greets Arjun and Arjun greets Priya. No host ever addresses themselves by their own name; the only exception is introducing yourself. The translit field must contain ONLY Latin letters: romanization. English belongs only in the english field. Output single compact JSON array without unescaped newlines inside strings."},
                     {"role": "user", "content": prompt}
                 ],
                 "temperature": 0.8
@@ -1159,8 +1159,8 @@ def _fallback_script(topic_tr, topic_en, target=150):
     topic_translit = to_accurate_translit(topic_tr)
     phases = [
         [
-            ('Host2', 'नमष्ते, **प्रिय**। आप कैसे हैं?', 'Hello, Priya. How are you?'),
-            ('Host1', 'नमष्ते, **अर्जुन**। मैं ठीक हूँ।', 'Hello, Arjun. I am fine.'),
+            ('Host2', 'नमष्ते, **अर्जुन**। आप कैसे हैं?', 'Hello, Arjun. How are you?'),
+            ('Host1', 'नमष्ते, **प्रिया**। मैं ठीक हूँ।', 'Hello, Priya. I am fine.'),
             ('Host2', 'आज हम **अच्छे** शब्द सीखेंगे।', 'Today we will learn good words.'),
             ('Host1', 'हाँ, प्रिया। चलिए एक छोटा **संवाद** करते हैं।', "Yes, Priya. Let's do a short conversation."),
             ('Host2', 'आपका **नाम** क्या है?', 'What is your name?'),
@@ -1244,14 +1244,14 @@ def generate_script():
     # Short 2-line intro: FEMALE (Host2) first, then MALE (Host1)
     topic_translit = to_accurate_translit(topic_tr)
     all_turns[0]["speaker"] = "Host2"
-    all_turns[0]["target"] = 'नमष्ते, **प्रिय**। आप कैसे हैं?'
-    all_turns[0]["translit"] = to_accurate_translit('नमष्ते, **प्रिय**। आप कैसे हैं?')
-    all_turns[0]["english"] = 'Hello, Priya. How are you?'
+    all_turns[0]["target"] = 'नमष्ते, **अर्जुन**। आप कैसे हैं?'
+    all_turns[0]["translit"] = to_accurate_translit('नमष्ते, **अर्जुन**। आप कैसे हैं?')
+    all_turns[0]["english"] = 'Hello, Arjun. How are you?'
     if len(all_turns) > 1:
         all_turns[1]["speaker"] = "Host1"
-        all_turns[1]["target"] = 'नमष्ते, **अर्जुन**। मैं ठीक हूँ।'
-        all_turns[1]["translit"] = to_accurate_translit('नमष्ते, **अर्जुन**। मैं ठीक हूँ।')
-        all_turns[1]["english"] = 'Hello, Arjun. I am fine.'
+        all_turns[1]["target"] = 'नमष्ते, **प्रिया**। मैं ठीक हूँ।'
+        all_turns[1]["translit"] = to_accurate_translit('नमष्ते, **प्रिया**। मैं ठीक हूँ।')
+        all_turns[1]["english"] = 'Hello, Priya. I am fine.'
     # Final guarantee across ALL turns: ensure valid Latin romaji exists for every single turn
     for turn in all_turns:
         ja = turn.get("target", "")
